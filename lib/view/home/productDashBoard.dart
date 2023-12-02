@@ -757,11 +757,36 @@ class _ProductDashBoardState extends State<ProductDashBoard> {
                     onTap: () {
                       audioPlayer.play(AssetSource('sounds/beep.mp3'));
 
+                      // Create a list to hold the details of selected items
+                      List<Map<String, dynamic>> selectedItemsDetails = [];
+
+                      // Iterate through itemPriceCount to get details for each selected item
+                      itemPriceCount.forEach((itemName, quantity) {
+                        if (quantity > 0) {
+                          int individualPrice = itemPrices[itemName] ?? 0;
+                          int totalPrice = quantity * individualPrice;
+
+                          // Create a map for each selected item's details
+                          Map<String, dynamic> itemDetails = {
+                            'name': itemName,
+                            'quantity': quantity,
+                            'individualPrice': individualPrice,
+                            'totalPrice': totalPrice,
+                          };
+
+                          // Add the map to the list
+                          selectedItemsDetails.add(itemDetails);
+                        }
+                      });
+
+                      // Pass the list to PrinterScreen
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PrinterScreen([itemPrices])));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PrinterScreen(selectedItemsDetails),
+                        ),
+                      );
                     },
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.17,

@@ -1,9 +1,8 @@
-import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/view/tab_screen/view-model/constants/constants.dart';
+import 'package:pos/view/tab_screen/view-model/widgets/inception_component/starDivider.dart';
 
 class PrinterScreen extends StatefulWidget {
   final List<Map<String, dynamic>> data;
@@ -14,95 +13,216 @@ class PrinterScreen extends StatefulWidget {
 }
 
 class _PrinterScreenState extends State<PrinterScreen> {
-  BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
-  List<BluetoothDevice> devices = [];
-  String deviceMsg = '';
-  final f = NumberFormat("\$###,###.00", "en_US");
+  String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  int subTotal = 0;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => {initPrinter()});
-    // TODO: implement initState
     super.initState();
+    calculateSubTotal();
   }
 
-  Future<void> initPrinter() async {
-    bluetoothPrint.startScan(timeout: Duration(seconds: 2));
-    if (!mounted) return;
-    bluetoothPrint.scanResults.listen((val) {
-      if (!mounted) return;
-      setState(() {
-        devices = val;
-      });
-      if (devices.isEmpty) {
-        deviceMsg = "Device not found";
-      }
-    });
+  void calculateSubTotal() {
+    subTotal = 0;
+    for (var item in widget.data) {
+      subTotal += (item['totalPrice'] as int); // Explicitly cast to int
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Select Printer',
-          ),
-          backgroundColor: Colors.blueGrey.shade50,
-        ),
-        body: devices.isEmpty
-            ? Center(
-                child: Text(deviceMsg),
-              )
-            : Expanded(
-                child: ListView.builder(
-                    itemCount: devices.length,
-                    itemBuilder: (c, i) {
-                      return ListTile(
-                        leading: Icon(
-                          MdiIcons.printer,
-                          color: primaryColor,
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        // title: Text(
+        //   'Galaxy',
+        //   style: TextStyle(
+        //     fontFamily: "tabfont",
+        //   ),
+        // ),
+        backgroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                color: white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text(
+                              'SHOP NAME',
+                              style: TextStyle(
+                                  fontFamily: "tabfont",
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.4),
+                            ),
+                          ),
+                          Text('Address: Gurugram, Haryana , ${date}'),
+                          Text('Telp: +91 6123456789'),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .03,
+                          ),
+                          Text(
+                            '* * * * * * * * * * * * * * * * * * * * * * * *',
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.black54),
+                          ),
+                          Text(
+                            'RECEIPT',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1.5),
+                          ),
+                          Text(
+                            '* * * * * * * * * * * * * * * * * * * * * * * *',
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.black54),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .01,
+                          ),
+                        ],
+                      ),
+                      // Headers for Item Name, Quantity, and Individual Price
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              'Item Name',
+                              style: TextStyle(
+                                fontFamily: "tabfont",
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              'Quantity',
+                              style: TextStyle(
+                                fontFamily: "tabfont",
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 40),
+                            child: Expanded(
+                              flex: 1,
+                              child: Text(
+                                'Price',
+                                style: TextStyle(
+                                  fontFamily: "tabfont",
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16.0),
+                      // Dynamically generated list of items
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: widget.data.map((item) {
+                          return Container(
+                            margin: EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(flex: 3, child: Text(item['name'])),
+                                Expanded(
+                                    flex: 1,
+                                    child: Text('${item['quantity']}')),
+                                Expanded(
+                                    flex: 1,
+                                    child: Text('₹${item['individualPrice']}')),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .01,
+                      ),
+                      Center(
+                        child: Text(
+                          '* * * * * * * * * * * * * * * * * * * * * * * *',
+                          style: TextStyle(fontSize: 20, color: Colors.black54),
                         ),
-                        title: Text(devices[i].name ?? ""),
-                        subtitle: Text(devices[i].address ?? ""),
-                        onTap: () {
-                          startPrint(devices[i]);
-                        },
-                      );
-                    }),
-              ));
-  }
-
-  Future<void> startPrint(BluetoothDevice device) async {
-    if (device != null && device.address != null) {
-      await bluetoothPrint.connect(device);
-      Map<String, dynamic> config = Map();
-      List<LineText> list = [];
-      list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: "Restaurant Name",
-        weight: 2,
-        width: 2,
-        height: 2,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1,
-      ));
-
-      for (var i = 0; i < widget.data.length; i++) {
-        if (i < widget.data.length) {
-          list.add(LineText(
-            type: LineText.TYPE_TEXT,
-            content: widget.data[i]['title'] ?? "",
-            weight: 0,
-            align: LineText.ALIGN_LEFT,
-            linefeed: 1,
-          ));
-          list.add(LineText(
-            type: LineText.TYPE_TEXT,
-            content: "${f.format(widget.data[i]['price'] ?? 0)}",
-            align: LineText.ALIGN_LEFT,
-            linefeed: 1,
-          ));
-        }
-      }
-    }
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5),
+                          ),
+                          Text(
+                            '₹$subTotal', // Display the calculated sub-total
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    backgroundColor: primaryColor),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      MdiIcons.printer,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .02,
+                    ),
+                    Text(
+                      'Print Receipt',
+                      style: TextStyle(fontSize: 17, color: Colors.white),
+                    ),
+                  ],
+                ),
+                onPressed: () async {},
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
