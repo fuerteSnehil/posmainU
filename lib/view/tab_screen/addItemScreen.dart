@@ -7,14 +7,11 @@ import 'package:pos/view/tab_screen/foodDetailsScreen.dart';
 import 'package:pos/view/tab_screen/utils.dart';
 import 'package:pos/view/tab_screen/view-model/constants/constants.dart';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AddItemScreen extends StatefulWidget {
   final String uid;
-  AddItemScreen({required this.uid, super.key});
+  const AddItemScreen({required this.uid, super.key});
 
   @override
   State<AddItemScreen> createState() => _AddItemScreenState();
@@ -46,7 +43,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: Text(
+          title: const Text(
             'Add Food Items',
             style: TextStyle(
               fontFamily: "tabfont",
@@ -62,15 +59,15 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height * .25,
                         width: MediaQuery.of(context).size.width * .6,
                         child: selectedIamge != null
                             ? Image.file(selectedIamge!)
                             : Image.asset('$imagesPath/cup.gif'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Select a Food Image',
                           style: TextStyle(
@@ -86,7 +83,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                             onPressed: () async {
                               pickImageFromGallery();
                             },
-                            child: Text(
+                            child: const Text(
                               'Gallery',
                               style: TextStyle(
                                 color: primaryColor,
@@ -98,7 +95,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                             onPressed: () async {
                               pickImageFromCamera();
                             },
-                            child: Text(
+                            child: const Text(
                               'Camera',
                               style: TextStyle(
                                 color: primaryColor,
@@ -114,7 +111,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 17,
                         color: primaryColor,
                         fontWeight: FontWeight.bold),
@@ -122,7 +119,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
                       hintText: 'Enter Food Name',
-                      hintStyle: TextStyle(fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(fontWeight: FontWeight.w400),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                         borderSide: const BorderSide(color: Colors.black38),
@@ -140,7 +137,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     keyboardType: TextInputType.phone,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 17,
                         color: primaryColor,
                         fontWeight: FontWeight.bold),
@@ -148,7 +145,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
                       hintText: 'Enter Food Code',
-                      hintStyle: TextStyle(fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(fontWeight: FontWeight.w400),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                         borderSide: const BorderSide(color: Colors.black38),
@@ -166,7 +163,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     keyboardType: TextInputType.phone,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 17,
                         color: primaryColor,
                         fontWeight: FontWeight.bold),
@@ -174,7 +171,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
                       hintText: 'Enter Food Price',
-                      hintStyle: TextStyle(fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(fontWeight: FontWeight.w400),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                         borderSide: const BorderSide(color: Colors.black38),
@@ -209,8 +206,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
                             MdiIcons.check,
                             color: Colors.white,
                           ),
-                          title: Center(
-                            child: const Text(
+                          title: const Center(
+                            child: Text(
                               'Continue',
                               style: TextStyle(
                                 color: Colors.white,
@@ -243,7 +240,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
         await ImagePicker().pickImage(source: ImageSource.camera);
     if (returnImage == null) return;
     setState(() {
-      selectedIamge = File(returnImage!.path);
+      selectedIamge = File(returnImage.path);
     });
   }
 
