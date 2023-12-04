@@ -35,7 +35,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
     try {
       final DocumentSnapshot doc =
-          await firestore.collection('AllUsers').doc(phoneNo).get();
+          await firestore.collection('AllCustomer').doc(phoneNo).get();
       print('Fetched Data: ${doc.data()}');
       print('Phone Number: $phoneNo');
       if (doc.exists) {
